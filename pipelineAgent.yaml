@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kaniko
+spec:
+  containers:
+    - name: kubectl
+      # this container contains kubectl binary to run kubectl commands
+      # kubectl container to run kubectl commands on our K8 cluster with all the cluster credentials.
+      image: joshendriks/alpine-k8s
+      command:
+        - /bin/cat
+      tty: true # sudo tty session as container main process to keep it alive.
+      ####
+
+    - name: kaniko # no need of container runtime to build images using google kaniko.
+      image: gcr.io/kaniko-project/executor:debug
+      command:
+        - /busybox/cat
+      tty: true
+      volumeMounts:
+        - name: kaniko-secret
+          mountPath: /kaniko/.docker
+      ####
+
+  volumes:
+    - name: kaniko-secret # volume for docker secrets
+      secret:
+        secretName: regcred # data on this volume will come from regcred kubernetes secret.
+        items:
+          - key: .dockerconfigjson
+            path: config.json

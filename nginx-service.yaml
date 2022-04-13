@@ -10,5 +10,5 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    name: nginx-pod-label
+    name: nginx-pod-label # services work above pod
   type: LoadBalancer

@@ -2,7 +2,11 @@ pipeline {
 
   agent {
     kubernetes {
-      yamlFile 'pipelineAgent.yaml'
+      yamlFile 'pipelineAgent.yaml'   
+    //  It means this pipeline will run in a pod defined in pipelineAgent.yaml file. The pod
+    //  has 2 containers running inside it.
+    //  1. Kaniko container (for building/pushing docker images)
+    //  2. Kubectl container (to run kubectl commands inside our cluster using .kubeconfig credentials)
     }
   }
 
@@ -17,11 +21,14 @@ pipeline {
             sh '''
             /kaniko/executor --dockerfile `pwd`/Dockerfile \
                              --context `pwd` \ 
-                             --destination=justmeandopensource/myweb:${BUILD_NUMBER}
+                             --destination=tashikmoin/blue-nginx:${BUILD_NUMBER}
             '''
             // --context for build context.
+
             // --dockerfile name of 'Dockerfile'.
-            // --destination for pushing images to desired container registry.
+
+            // --destination for pushing images to desired ("any") container registry like 
+            // dockerhub, Azure Container Registry, etc.
           }
         }
       }
@@ -30,7 +37,7 @@ pipeline {
     stage('Deploy App to Kubernetes') {     
       steps {
         container('kubectl') {
-          withCredentials([file(credentialsId: 'mykubeconfig', variable: 'KUBECONFIG')]) {
+          withCredentials([file(credentialsId: 'k8credid', variable: 'KUBECONFIG')]) {
             sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
             sh 'kubectl apply -f myweb.yaml'
           }

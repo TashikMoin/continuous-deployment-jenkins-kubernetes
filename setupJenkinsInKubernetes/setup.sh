@@ -23,6 +23,6 @@ helm install jenkins jenkinsci/jenkins --values ./jenkinsValues.yaml -n jenkins
 printf "\n\n... wait for 2-3 minutes to install jenkins ...\n\n"
 printf "... Once all the installation is done, run 'kubectl get all -n jenkins' ...\n\n"
 printf "... Access jenkins on port 8080 with external IP of the LoadBalancer service of jenkins ...\n\n"
-
+printf "... Search and install all the plugins manually that are listed under jenkins warning/notification. ...\n\n"
 
 

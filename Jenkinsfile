@@ -42,7 +42,7 @@ pipeline {
             sh 'kubectl apply -f nginx-service.yaml -n default'
           }
         }
-      }
+      } 
     }
   
   }

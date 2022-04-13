@@ -20,7 +20,7 @@ pipeline {
           script {
             sh '''
             /kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` \
-                             --destination=tashikmoin/nginx-deployment-k8cd:${BUILD_NUMBER}
+                             --destination=tashikmoin/nginx-deployment-k8cd:latest
             '''
             // --context for build context.
 
@@ -37,7 +37,7 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([file(credentialsId: 'k8credid', variable: 'KUBECONFIG')]) {
-            sh 'sed -i "s/:latest/${BUILD_NUMBER}/" nginx.yaml'
+            // sh 'sed -i "s/:latest/${BUILD_NUMBER}/" nginx.yaml'
             sh 'kubectl apply -f nginx.yaml -n default'
           }
         }

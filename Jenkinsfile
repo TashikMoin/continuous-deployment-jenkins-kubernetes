@@ -38,7 +38,7 @@ pipeline {
         container('kubectl') {
           withCredentials([file(credentialsId: 'k8credid', variable: 'KUBECONFIG')]) {
             sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" nginx.yaml'
-            sh 'kubectl apply -f nginx.yaml'
+            sh 'kubectl apply -f nginx.yaml -n default'
           }
         }
       }
